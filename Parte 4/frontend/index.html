@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interface ANS</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <input v-model="termo" placeholder="Buscar operadora..." @keyup.enter="buscar">
+        <button @click="buscar">Pesquisar</button>
+
+        <ul>
+            <li v-for="item in resultados" :key="item.REGISTRO_OPERADORA">
+            <strong>{{ item.REGISTRO_OPERADORA }}</strong> - {{ item.Razao_Social }}
+            </li>
+        </ul>
+    </div>
+    <script>
+        const { createApp, ref } = Vue
+        createApp({
+            setup() {
+                const termo = ref('')
+                const resultados = ref([])
+                const buscar = async () => {
+                    const res = await fetch(`http://localhost:8000/buscar?termo=${termo.value}`)
+                    resultados.value = await res.json()
+                }
+                return { termo, resultados, buscar }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
